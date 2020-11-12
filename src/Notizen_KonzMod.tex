@@ -1,0 +1,385 @@
+%! Author = aurelius
+%! Date = 31.07.20
+
+% Preamble
+\documentclass{article}
+% Packages
+\usepackage{amsmath}
+\usepackage{fancyhdr}
+\usepackage[margin=0.5in]{geometry}
+\usepackage{indentfirst}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lastpage}
+\usepackage{amsfonts}
+\usepackage{mathtools}
+\usepackage{ulem}
+\usepackage{setspace}
+\usepackage{cancel}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{trees}
+\usepackage[ngerman]{datetime}
+\usepackage[ngerman]{babel}
+\usepackage{hyphenat}
+\usepackage{amssymb}
+\hyphenation{Mathe-matik wieder-gewinnen}
+\usetikzlibrary{er,positioning}
+
+
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{arrows}
+\usetikzlibrary{fit}
+
+\tikzstyle{every entity} = []
+\tikzstyle{every weak entity} = []
+\tikzstyle{every attribute} = []
+\tikzstyle{every relationship} = []
+\tikzstyle{every link} = []
+\tikzstyle{every isa} = []
+
+\tikzstyle{link} = [>=triangle 60, draw, thick, every link]
+
+\tikzstyle{total} = [link, double, double distance=3pt]
+
+\tikzstyle{entity} = [rectangle, draw, black, very thick,
+minimum width=6em, minimum height=3em,
+every entity]
+
+\tikzstyle{weak entity} = [entity, double, double distance=2pt,
+every weak entity]
+
+\tikzstyle{attribute} = [ellipse, draw, black, very thick,
+minimum width=5em, minimum height=2em,
+every attribute]
+
+\tikzstyle{multi attribute} = [attribute, double, double distance=2pt]
+
+\tikzstyle{derived attribute} = [attribute, dashed]
+
+\tikzstyle{relationship} = [top color=white, bottom color=white, diamond, draw, black, very thick,
+minimum width=2em, aspect=1,
+every relationship]
+
+\tikzstyle{ident relationship} = [relationship, double, double distance=2pt]
+
+
+\newcommand{\KW}[1]{\indexspace\textbf{\underline{#1:}} \\}
+\newcommand{\Def}[2]{\indexspace\textbf{\underline{#1:}} \\ \\\textbf{Def.} $\rightarrow$ {#2}}
+\newcommand{\DApp}[2]{\textbf{#1} $\rightarrow$ {#2}}
+\newcommand{\TODO}[1]{\color{green} \textbf{/TODO} - {#1} \color{black}}
+
+
+\addtolength{\voffset}{1cm}
+\addtolength{\textheight}{-0.6cm}
+\setlength{\footskip}{0cm}
+\cfoot{}
+\lhead{Konzeptionelle Modellierung}
+\rhead{\today, Seite \thepage.}
+\pagestyle{fancy}
+
+% Document
+\title{Konzeptionelle Modellierung WS 19/20}
+\author{Aurelius Adrian}
+\date{\today}
+
+\begin{document}
+    \maketitle
+    \tableofcontents
+
+    \newpage
+    \section{Grundlagen}
+    \subsection{Modellierung - Grundbegriffe}
+    \Def{Modell}{Ein Modell ist ein zweckgerichtetes vereinfachtes Abbild der Wirklichkeit} \\
+    \DApp{Zweck}{Spezifizieren, Konstruieren, Visualisieren u. Dokumentieren von Software-Systemen}
+    \subsection{Datenbank - Grundbegriffe}
+    \Def{Datenbank}{(EN) A Database is a collection of related Data.} \\
+    \DApp{Def.}{(DEU) Eine Datenbank ist eine Sammlung zusammenhängender Daten.} \\
+    \Def{Konzeptionelles Datenbankschema}{Representation eines Ausschnitts der realen Welt - "Miniwelt"} \\
+    \DApp{Zweck}{Ermöglicht eine gemeinsame Sicht (Anwendungsunabhängigkeit)} \\
+    \Def{Datenbank Management System (DBMS)}{Sammlung von Programmen zur Verwaltung einer Datenbank} \\
+    \DApp{Zweck}{Erzeugung und Warten von sowie Konsistenter Zugriff auf Datenbanken}
+    \Def{Datenbank System (DBS)}{Datenbank + Datenbank Management System (DBMS)}
+    \Def{Datenbankanwendung}{Datenbank System (DBS) + Anwendungsprogramme}
+    \Def{Datenmodell (DM-Modell)}{Strukturierungsvorschrift wie z.B.: Relationenmodell, Netzwerkmodell, Hierachisches Datenmodell}
+    \Def{Datenbankschema}{Beschreibung einer konkreten Datenbank}
+    \KW{Vorteile von Datenbanken}
+    \begin{itemize}
+        \item Vermeidung redundanter Daten
+        \item Zentrale Kontrolle der Datenintegrität
+        \subitem - Logische Datenintegrität
+        \subitem - Physische Datenintegrität
+        \item Synchronisation im Mehrbenutzerbetrieb
+        \item Fehlertoleranz
+    \end{itemize}
+
+    \newpage %tmp
+
+    \KW{Inhalt einer Datenbank} \\
+    \DApp{Nutzdaten}{Eigentliche Datenbank} \\
+    \DApp{Metadaten}{Daten über die Strukturierung der Nutzdaten}
+    
+    \KW{Aufbau von Datenbanken} \\
+    \tikzstyle{every node}=[draw=black,thick,anchor=west]
+    \tikzstyle{selected}=[draw=red,fill=red!30]
+    \tikzstyle{optional}=[dashed,fill=gray!50]
+    \begin{tikzpicture}[
+    grow via three points={one child at (0.5,-0.7) and
+    two children at (0.5,-0.7) and (0.5,-1.4)},
+    edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)}]
+        \node [selected] {Benutzer}
+        child {node {Datenbankanwendung}
+        child {node {Anwendungsprogramme}}
+        child {node {Datenbank System (DBS)}
+        child {node {Datenbank Management System (DBMS)}}
+        child {node {Datenbank (DB)}}}}
+    \end{tikzpicture}
+    
+    \subsection{3-Schema-Architektur (ANSI/SPARC, 1975)}
+    Trennt 3 strikt Arten von Metadaten:
+    \Def{1 - Konzeptionelles Schema}{Beschreibt sämtliche Daten auf Logischer Ebene z.B. Patient(Nr., Krankenkasse, Laborwerte)}
+    \Def{2 - Externes Schema}{Beschreibt für eine Anwendung relevanten Teil (Ausschnitt) einer Datenbank auf logischer Ebene z.B. für den Arzt - Patient (Nr., Laborwerte) oder für die Krankenhausverwaltung - Patient(Nr., Krankenkasse)}
+    \Def{3 - Internes Schema}{Beschreibt die internen Speicherstrukturen einer Datenbank, ist zudem nicht sichtbar vom Anwender}
+
+    \subsection{Konzeptionelles Schema}
+    Das konzeptionelle Schema regelt:
+    \Def{Datenunabhängigkeit der Anwendung}{Benutzung der Daten ohne Bezug auf Details der Speicherung, optimierungsfähig.}\\
+    \DApp{}{Nur logische (abstrakte Sicht auf die Daten)} \\
+    \DApp{}{In anderen Kontexten auch: Datenabstraktion, Datenkapselung oder Information hiding genannt.} \\
+    \Def{Anwendungsneutralität der Datenbank}{Offen für die Wiederverwendung durch neue Anwendungen.} \\
+    \DApp{}{Gibt ein Strukturen Schema für Anwendungen, vermeidet so Redundanz (optimierend).} \\
+    \DApp{}{Anwendungsspezifische Beschreibungen sind nicht im konzeptionellen Schema verankert}
+
+    \subsection{Datenmodellierung}
+    \begin{center}
+        \begin{tabular}{ c | c }
+            Miniwelt & Objekte, Begriffe, Objektbezeichnungen \\
+            \hline
+            Konzeptioneller Entwurf & E/R-Modell\\
+            Konzeptionelles Schema & E/R-Diagramm \\
+            \hline
+            Logischer Entwurf & Relationales Datenmodell \\
+            Logisches (Konzeptionelles) Schema & Relationelles DB-Schema
+        \end{tabular}
+    \end{center}
+
+    \newpage
+    \section{Grundlagen des Entity/Relationship-Modells}
+    \subsection{Entities und Attribute}
+    \Def{Entity}{Zu beschreibendes Objekt} \\ \\
+    Entities sind/haben:
+    \begin{itemize}
+        \item[1)] Eigenständige Existenz
+        \item[2)] Identifizierbar (= unterscheidbar)
+        \item[3)] Beschreibbar (Merkmale, Attribute)
+        \item[4)] Relevant (für Anwendungswelt)
+    \end{itemize}
+    \Def{Entity-Typ}{Beschreibung gleichartiger Objekte}
+    \Def{Attribut}{Eigenschaft/Merkmal von Objekten eines Entity-Typs}
+    \Def{Schlüssel-Attribut}{Attribut oder Kombination aus Attributen die ein Eintity-Typ Identifiziert}
+    \Def{Entity-Menge}{Menge gleichartiger Objekte}
+
+    \subsection{Relationships}
+    \Def{Relationship}{Beziehung zwischen zwei oder mehr Objekten}
+    \Def{Relationship-Typ}{Beschreibung gleichartiger Beziehungen} \\
+    \DApp{}{Relationship-Typen können auch Attribute besitzen}
+    \Def{Relationship-Menge}{Menge gleichartiger Beziehungen}
+
+    \newpage
+    \subsection{Symbole}
+        \begin{tabular}{c c}
+            \begin{tikzpicture}[auto,node distance=1.5cm]
+                \node[entity] (node1) {Entity}
+            \end{tikzpicture} &
+            \begin{tikzpicture}[auto,node distance=1.5cm]
+                \node[weak entity] (node1) {Schwacher Entity Typ}
+            \end{tikzpicture} \\ \\
+            \begin{tikzpicture}[auto,node distance=1.5cm]
+                \node[relationship] (node1) {Rel. Typ}
+            \end{tikzpicture} &
+            \begin{tikzpicture}[auto,node distance=1.5cm]
+                \node[ident relationship] (node1) {Ident. Rel. Typ}
+            \end{tikzpicture}
+        \end{tabular} \\ \\ \\
+    \begin{center}
+    \begin{tikzpicture}[auto,node distance=1.5cm]
+    \node[entity] (node1) {Entity}
+    [grow=right,sibling distance=3.5cm]
+    child [grow=down,level distance=2cm, xshift=-3cm] {node[attribute] {\textbf{Schlüssel-Attribut}}}
+    child [grow=right,level distance=2cm, yshift=-3cm] {node[multi attribute] {\textbf{Mehrwertiges Attribut}}}
+    child {node[derived attribute] {Abgeleitetes Attribut}}
+    child [grow=up,level distance=2cm] {node[attribute] {Zusammengesetztes Attribut} [grow=up,sibling distance=2cm] child {node[attribute] {ZA 1.}} child {node[attribute] {ZA 2.}} child {node[attribute] {ZA 3.}}}
+    child [grow=left,level distance=4cm] {node[attribute] {Attribut}};
+    \end{tikzpicture}
+    \end{center}
+    
+    \newpage
+    \subsection{Kardinalitäten der Beziehungen}
+
+    \noindent Totale-Teilnahme von E1 in R: \\
+
+    \begin{tikzpicture}[auto,node distance=1.5cm]
+        \node[entity] (node1) {E1};
+        \node[relationship] (node2) [right = of node1] {R};
+        \node[entity] (node3) [right = of node2] {E2};
+        \path (node1) edge[total] (node2);
+        \path (node3) edge (node2);
+    \end{tikzpicture} \\
+    Die Notation der Totalen-Teilnahme ist in den jeglichen Notationen, zur daarstellung von ER sowie EER Diagrammen, anwendbar.
+    \KW{Chen-Notation} \\
+    Maximal ein E1 ist in Relation R mit maximal einem E2: \\
+
+    \begin{tikzpicture}[auto,node distance=1.5cm]
+        \node[entity] (node1) {E1};
+        \node[relationship] (node2) [right = of node1] {R};
+        \node[entity] (node3) [right = of node2] {E2};
+        \path (node1) edge node [draw=none, yshift=0.3cm, xshift=-0.5cm] {\textbf{1}} (node2);
+        \path (node3) edge node [draw=none, yshift=0.3cm] {\textbf{1}} (node2);
+    \end{tikzpicture}
+    \\ \\
+    Undefiniert viele E1 sind in Relation R mit undefiniert vielen E2: \\
+
+    \begin{tikzpicture}[auto,node distance=1.5cm]
+        \node[entity] (node1) {E1};
+        \node[relationship] (node2) [right = of node1] {R};
+        \node[entity] (node3) [right = of node2] {E2};
+        \path (node1) edge node [draw=none, yshift=0.3cm, xshift=-0.5cm] {\textbf{N}} (node2);
+        \path (node3) edge node [draw=none, yshift=0.3cm] {\textbf{M}} (node2);
+    \end{tikzpicture}
+    \\ \\
+    Undefiniert viele E1 sind in Relation R mit genau einem E2: \\
+
+    \begin{tikzpicture}[auto,node distance=1.5cm]
+        \node[entity] (node1) {E1};
+        \node[relationship] (node2) [right = of node1] {R};
+        \node[entity] (node3) [right = of node2] {E2};
+        \path (node1) edge node [draw=none, yshift=0.3cm, xshift=-0.5cm] {\textbf{N}} (node2);
+        \path (node3) edge node [draw=none, yshift=0.3cm] {\textbf{1}} (node2);
+    \end{tikzpicture}
+    
+    \KW{(Min, Max)-Notation}
+
+    %node [draw=none, yshift=0.3cm, xshift=-0.5cm] {hi}
+
+    \newpage
+    \section{Das erweiterte ER-Modell (EER)}
+    \subsection{Grundlagen des EER-Modells}
+    \Def{Klassen}{Eine Entity-Menge} \\
+    \DApp{}{\textbf{Unterklassen} sind Teilmengen einer Klasse} \\
+    \DApp{}{\textbf{Oberklassen} sind Teilmengen einer Klasse} \\
+    \noindent\large$\forall \; a \in \text{E2},\; b \in \text{E3}: a \notin \text{E3} \land b \notin \text{E2} \land a, b \in \text{E1}$
+    \begin{center}
+    \begin{tikzpicture}[auto,node distance=1.5cm]
+        \node[entity] (node1) {E1};
+        \node[circle] (node0) [below=of node1]{\huge d};
+        \node[entity] (node2) [below left=of node0] {E2};
+        \node[entity] (node3) [below right=of node0] {E3};
+        \path (node2) edge node [pos=0.5, draw=none, yshift=0cm, xshift=0, rotate=38] {\huge$\subset$} (node0);
+        \path (node3) edge node [pos=0.5, draw=none, yshift=-0.1cm, xshift=0.1cm, rotate=140] {\huge$\subset$} (node0);
+        \path (node1) edge (node0);
+    \end{tikzpicture}
+    \end{center}
+    \\ \\
+    \noindent\large$\forall \; a \in \text{E1}: a \in \text{E2} \veebar a \in \text{E3}$
+    \begin{center}
+        \begin{tikzpicture}[auto,node distance=1.5cm]
+            \node[entity] (node1) {E1};
+            \node[circle] (node0) [below=of node1]{\huge d};
+            \node[entity] (node2) [below left=of node0] {E2};
+            \node[entity] (node3) [below right=of node0] {E3};
+            \path (node2) edge node [pos=0.5, draw=none, yshift=0cm, xshift=0, rotate=38] {\huge$\subset$} (node0);
+            \path (node3) edge node [pos=0.5, draw=none, yshift=-0.1cm, xshift=0.1cm, rotate=140] {\huge$\subset$} (node0);
+            \path (node1) edge[total] (node0);
+        \end{tikzpicture}
+    \end{center}
+    \\ \\
+    \noindent\large$\forall \; a \in \text{E2},\; b \in \text{E3}: (a \in \text{E3} \lor b \in \text{E2}) \land a, b \in \text{E1}$
+    \begin{center}
+        \begin{tikzpicture}[auto,node distance=1.5cm]
+            \node[entity] (node1) {E1};
+            \node[circle] (node0) [below=of node1]{\huge o};
+            \node[entity] (node2) [below left=of node0] {E2};
+            \node[entity] (node3) [below right=of node0] {E3};
+            \path (node2) edge node [pos=0.5, draw=none, yshift=0cm, xshift=0, rotate=38] {\huge$\subset$} (node0);
+            \path (node3) edge node [pos=0.5, draw=none, yshift=-0.1cm, xshift=0.1cm, rotate=140] {\huge$\subset$} (node0);
+            \path (node1) edge (node0);
+        \end{tikzpicture}
+    \end{center}
+    \\ \\
+    \noindent\large$\forall \; a \in \text{E1}: a \in \text{E2} \lor a \in \text{E3}$
+    \begin{center}
+        \begin{tikzpicture}[auto,node distance=1.5cm]
+            \node[entity] (node1) {E1};
+            \node[circle] (node0) [below=of node1]{\huge o};
+            \node[entity] (node2) [below left=of node0] {E2};
+            \node[entity] (node3) [below right=of node0] {E3};
+            \path (node2) edge node [pos=0.5, draw=none, yshift=0cm, xshift=0, rotate=38] {\huge$\subset$} (node0);
+            \path (node3) edge node [pos=0.5, draw=none, yshift=-0.1cm, xshift=0.1cm, rotate=140] {\huge$\subset$} (node0);
+            \path (node1) edge[total] (node0);
+        \end{tikzpicture}
+    \end{center}
+    
+    
+    \KW{Vererbung}
+    \begin{itemize}
+        \item Entities in einer Unterklasse "erben" alle Attribute aus der Oberklasse.
+        \item Entities der Unterklasse "erben" alle Beziehungen aus der Oberklasse.
+        \item Ein Schlüssel der Oberklasse ist immer auch Schlüssel der Unterklassen. 
+        \item Unterklassen können ggf. weitere alternative Schlüssel (nur für die Unterklasse!) ergänzen.
+    \end{itemize}
+
+    \noindent \TODO{Union EER (Kategorie)} \\
+    \TODO{Krähenfuß} \\
+
+    \newpage
+    \section{Das Relationale Datenmodell}
+    \subsection{Grundlagen des Relationenmodells}
+
+    \noindent Das Prinzip des Relationenmodells liegt darin die Abfrage von Daten über inhaltliche kretieren zu veranlassen, im gegensatz zu über Speicherstrukturen. \\\\
+    Das Relationenmodell benötigt eine einheiltliche logische Datenstruktur. \\ \\
+    Alle Daten sind in Tabellen strukturiert, eine solche Tabelle wird als Relation bezeichnet.\\ D.h. Relationale Datenbank = Menge von Relationen.
+    
+    \Def{Kardinalität}{Anzahl der Spalten in einer Tabelle im relationalen Datenmodell.}
+    \newpage
+    \section{Mapping}
+    \subsection{Grundlagen beim Mapping}
+
+    \noindent Mapping ist das Abbilden eines ER/EER modell's auf das relationale Datenmodell.
+    
+    \newpage
+    \section{Normalisierung}
+    \subsection{Grundlagen der Normalisierung}
+    \Def{Superschlüssel}{Alle Attribute einer Relation sind funktional Abhängig von einem Attribut, dem Superschlüssel}
+    \subsection{Erste Normalform}
+    \noindent\DApp{Def.}{Eine Relation ist in erster Normalform (1NF), wenn sie nur atomare Attributwerte besitzt.}
+    \\ \\
+    Für eine Relation (Tabelle) in 1NF gilt:
+    \begin{itemize}
+        \item Jeder Attributwert ist atomar.
+        \item Es gibt keine zwei gleichen Tupel (Zeilen).
+        \item Die Reihenfolge der Tupel ist unerheblich.
+        \item Jeder Attributwert (in einer Spalte) gehört zum Wertebereich des Attributs.
+        \item Jedes Attribut (jede Spalte) hat einen eindeutigen Namen.
+        \item Die Reihenfolge der Attribute ist unerheblich.
+    \end{itemize}
+
+    \Def{Atomar}{Es gibt maximal einen wert in einem Feld.}
+
+    \subsection{Zweite Normalform}
+    \noindent\DApp{Def.}{Einen Relation ist in zweiter Normalform (2NF), wenn sie in erster Normalform ist und alle Nicht-Schlüsselattribute voll funktional von jedem Schlüsselkandidaten abhängen.}
+    \\ \\
+    Ziel der 2NF ist die eliminierung "partieller Abhängigkeiten" der Form: \\ \\
+    R(\underline{A,B},C,D): A,B $\rightarrow$ C u. B $\rightarrow$ D $\xRightarrow{\text{In 2NF:} \; \;}$ R1(\underline{A,B[R2]},C), R2(\underline{B},D)
+    
+    \subsection{Dritte Normalform}
+    \noindent\DApp{Def.}{Eine Tabelle ist in dritter Normalform (3NF), wenn kein Nicht-Schlüsselattribut transitiv abhängig von einem Schlüsselkandidaten ist.}
+    \\ \\
+    Ziel der 3NF ist die eliminierung "transitiver Abhängigkeiten" der Form: \\ \\
+    R(\underline{A},B,C,D): A $\rightarrow$ B, C u. B $\rightarrow$ C $\xRightarrow{\text{In 3NF:} \; \;}$ R1(\underline{A,B[R2]},D), R2(\underline{B},C)
+
+    \subsection{Boyce-Codd Normalform}
+    \noindent\DApp{Def.}{Eine Relation ist in Boyce-Codd-Normalform (BCNF), wenn jede Determinante einer funktionalen Abhängigkeiten ein Superschlüssel ist.}
+    \\ \\
+    Ziel der BCNF ist es alle Schlüsselkandidaten zu Superschlüssel zu machen : \\ \\
+    R(\underline{A,B},C): A,B $\rightarrow$ C u. C $\rightarrow$ B $\xRightarrow{\text{In 3NF:} \; \;}$ R1(\underline{A,C[R2]}), R2(\underline{C},B)
+ \end{document}
